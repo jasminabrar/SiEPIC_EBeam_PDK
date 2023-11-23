@@ -1,0 +1,6 @@
+[run]
+source = /home/pymacros  # Specify the source code directory
+
+[report]
+exclude_lines =
+    if __name__ == "__main__":  # Exclude lines that only run when the script is the main module
