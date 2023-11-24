@@ -1,4 +1,4 @@
-# run_tests.py
+#!/usr/bin/env python3
 import subprocess
 import os
 
@@ -7,7 +7,7 @@ os.environ['COVERAGE_PROCESS_START'] = '/home/pymacros/.coveragerc'
 
 # Run your tests with coverage using klayout
 try:
-    subprocess.run(['coverage', 'run', '--source=/home/pymacros', '/usr/bin/klayout', '-zz', 'pymacros/EBeam_Lib_PCellTests.py'], check=True)
+    subprocess.run(['coverage', 'run', '--source=/home/pymacros', '/usr/bin/klayout', '-zz', '/home/pymacros/EBeam_Lib_PCellTests.py'], check=True)
 except subprocess.CalledProcessError as e:
     print(f"Error during test execution: {e}")
     # Print the contents of the KLayout log
