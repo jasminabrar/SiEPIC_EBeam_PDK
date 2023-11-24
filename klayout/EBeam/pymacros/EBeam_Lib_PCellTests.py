@@ -1,3 +1,5 @@
+#!/usr/bin/env klayout
+
 import pya
 from pya import *
 import os

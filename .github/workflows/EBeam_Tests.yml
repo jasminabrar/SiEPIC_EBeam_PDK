@@ -23,8 +23,10 @@ jobs:
       - name: Run docker container from image
         run: docker run -itd --name ebeam_test -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --security-opt label=type:container_runtime_t ghcr.io/jasminabrar/siepic_ebeam_pdk/siepic_klayout:master-latest
 
-      - name: Copy pymacros folder to docker container
-        run: docker cp $GITHUB_WORKSPACE/klayout/EBeam/pymacros ebeam_test:/home/pymacros
+      - name: Copy pymacros folder to docker container and set EBeam_Lib_PCellTests.py to be executable
+        run: |
+                docker cp $GITHUB_WORKSPACE/klayout/EBeam/pymacros ebeam_test:/home/pymacros
+                docker exec ebeam_test chmod +x /home/pymacros/EBeam_Lib_PCellTests.py
 
       - name: Install coverage inside the container
         run: docker exec ebeam_test /usr/bin/python3 -m pip install coverage
