@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+            fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
 
       - name: Pull siepic_klayout image
         run: docker pull ghcr.io/jasminabrar/siepic_ebeam_pdk/siepic_klayout:master-latest
@@ -24,6 +26,41 @@ jobs:
 
       - name: Copy pymacros folder to docker container
         run: docker cp $GITHUB_WORKSPACE/klayout/EBeam/pymacros ebeam_test:/home/pymacros
+
+      - name: Get pcell .py files added to EBeam library folders
+        id: changed-files
+        run: |
+          if ${{ github.event_name == 'pull_request' }}; then
+              echo "changed_files=$(git diff --name-only -r HEAD^1 HEAD | grep -E 'klayout/EBeam/pymacros/(pcells_EBeam|pcells_SiN|pcells_EBeam_Dream|pcells_EBeam_Beta)/' | xargs)" >> $GITHUB_OUTPUT
+          else
+              echo "changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep -E 'klayout/EBeam/pymacros/(pcells_EBeam|pcells_SiN|pcells_EBeam_Dream|pcells_EBeam_Beta)/' | xargs)" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Copy new pcell files into klayout in Docker container
+        run: |
+          changed_files="${{ steps.changed-files.outputs.changed_files }}"
+      
+          IFS=$'\n' # Set Internal Field Separator to newline to handle file paths with spaces
+
+          for file in $changed_files; do
+            # Determine the library folder based on the file path
+            folder=$(dirname "$file")
+
+            # Extract the last part of the path (directory name)
+            folder=$(basename "$folder")
+
+            # Extract the filename
+            filename=$(basename "$file")
+
+            # Define the destination path in the Docker container
+            destination_path="/root/.klayout/salt/SiEPIC_EBeam_PDK/klayout/EBeam/pymacros/$folder"
+
+            # Perform docker cp for each file
+            docker cp "$GITHUB_WORKSPACE/$file" ebeam_test:"$destination_path"
+
+            echo "Copied $file to $destination_path"
+          done
+
 
       - name: Run KLayout Python script inside container and capture exit code
         run: docker exec ebeam_test klayout -zz -r pymacros/EBeam_Lib_PCellTests.py || echo "KLAYOUT_EXIT_CODE=$?" >> $GITHUB_ENV
