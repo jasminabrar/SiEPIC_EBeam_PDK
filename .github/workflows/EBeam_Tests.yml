@@ -45,8 +45,10 @@ jobs:
       
           IFS=$'\n' # Set Internal Field Separator to newline to handle file paths with spaces
           files_array=($added_files) # convert to array of file paths
+          echo "Files Array: $files_array"
           
-          for file in "${files_array[@]}"; do
+          echo "$added_files" | while read -r file; do
+        
             # Determine the library folder based on the file path
             folder=$(dirname "$file")
 
