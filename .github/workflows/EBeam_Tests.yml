@@ -11,7 +11,8 @@ on:
 jobs:     
   ebeam-lib-pcell-test:
     runs-on: ubuntu-latest
-
+    permissions: write-all
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -67,9 +68,9 @@ jobs:
 
       - name: Trigger Docker build workflow if new pcells were added
         if: steps.changed-files.outputs.changed_files != ''
-        uses: actions/workflow-dispatch@v2
-        with:
-          workflow: 'Create and Publish Docker Image'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run Docker_Image.yml
 
       - name: Stop container and remove it 
         run: |
