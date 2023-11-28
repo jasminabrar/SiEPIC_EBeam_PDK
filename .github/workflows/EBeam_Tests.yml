@@ -44,8 +44,9 @@ jobs:
           echo "Files to copy: $added_files"
       
           IFS=$'\n' # Set Internal Field Separator to newline to handle file paths with spaces
-
-          for file in $added_files; do
+          files_array=($added_files) # convert to array of file paths
+          
+          for file in "${files_array[@]}"; do
             # Determine the library folder based on the file path
             folder=$(dirname "$file")
 
