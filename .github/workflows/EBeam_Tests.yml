@@ -41,6 +41,7 @@ jobs:
       - name: Copy new pcell files into klayout in Docker container
         run: |
           added_files="${{ steps.added-files.outputs.added_files }}"
+          echo "Files to copy: $added_files"
       
           IFS=$'\n' # Set Internal Field Separator to newline to handle file paths with spaces
 
@@ -56,7 +57,9 @@ jobs:
 
             # Define the destination path in the Docker container
             destination_path="/root/.klayout/salt/SiEPIC_EBeam_PDK/klayout/EBeam/pymacros/$folder"
-
+            
+            echo "Copy $GITHUB_WORKSPACE/$file to $destination_path"
+            
             # Perform docker cp for each file
             docker cp "$GITHUB_WORKSPACE/$file" ebeam_test:"$destination_path"
 
