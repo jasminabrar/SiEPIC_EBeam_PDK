@@ -19,10 +19,10 @@ on:
     branches: [ "ebeam-tests-fixed" ] #change to master after
     paths:
       - 'Dockerfile'
-      - 'klayout/EBeam/pymacros/pcells_EBeam/**'
-      - 'klayout/EBeam/pymacros/pcells_SiN/**'
-      - 'klayout/EBeam/pymacros/pcells_EBeam_Dream/**'
-      - 'klayout/EBeam/pymacros/pcells_EBeam_Beta/**'
+      #- 'klayout/EBeam/pymacros/pcells_EBeam/**'
+      #- 'klayout/EBeam/pymacros/pcells_SiN/**'
+      #- 'klayout/EBeam/pymacros/pcells_EBeam_Dream/**'
+      #- 'klayout/EBeam/pymacros/pcells_EBeam_Beta/**'
     
 env:
   REGISTRY: ghcr.io
