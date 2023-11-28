@@ -67,11 +67,11 @@ jobs:
         run: docker exec ebeam_test klayout -zz -r pymacros/EBeam_Lib_PCellTests.py || echo "KLAYOUT_EXIT_CODE=$?" >> $GITHUB_ENV
         continue-on-error: true
 
-      - name: Trigger Docker build workflow if new pcells were added
-        if: steps.changed-files.outputs.changed_files != ''
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run Docker_Image.yml --ref ebeam-tests-fixed
+      #- name: Trigger Docker build workflow if new pcells were added
+      #  if: steps.changed-files.outputs.changed_files != ''
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #  run: gh workflow run Docker_Image.yml --ref ebeam-tests-fixed
 
       - name: Stop container and remove it 
         run: |
