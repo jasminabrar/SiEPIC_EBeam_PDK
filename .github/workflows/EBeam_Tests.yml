@@ -21,10 +21,10 @@ jobs:
             fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
 
       - name: Pull siepic_klayout image
-        run: docker pull ghcr.io/jasminabrar/siepic_ebeam_pdk/siepic_klayout:ebeam-tests-fixed.20231128.20
+        run: docker pull ghcr.io/jasminabrar/siepic_ebeam_pdk/siepic_klayout:ebeam-tests-fixed.20231128.23
      
       - name: Run docker container from image
-        run: docker run -itd --name ebeam_test -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --security-opt label=type:container_runtime_t ghcr.io/jasminabrar/siepic_ebeam_pdk/siepic_klayout:ebeam-tests-fixed.20231128.20
+        run: docker run -itd --name ebeam_test -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --security-opt label=type:container_runtime_t ghcr.io/jasminabrar/siepic_ebeam_pdk/siepic_klayout:ebeam-tests-fixed.20231128.23
 
       - name: Copy pymacros folder to docker container
         run: docker cp $GITHUB_WORKSPACE/klayout/EBeam/pymacros ebeam_test:/home/pymacros
