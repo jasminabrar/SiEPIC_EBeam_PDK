@@ -43,11 +43,11 @@ jobs:
           added_files="${{ steps.added-files.outputs.added_files }}"
           echo "Files to copy: $added_files"
       
-          IFS=$'\n' # Set Internal Field Separator to newline to handle file paths with spaces
-          files_array=($added_files) # convert to array of file paths
-          echo "Files Array: $files_array"
+          IFS='' # Set Internal Field Separator to newline to handle file paths with spaces
+          #files_array=($added_files) # convert to array of file paths
+          #echo "Files Array: $files_array"
           
-          echo "$added_files" | while read -r file; do
+          for file in $added_files; do
         
             # Determine the library folder based on the file path
             folder=$(dirname "$file")
