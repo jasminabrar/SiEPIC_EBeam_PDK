@@ -71,7 +71,7 @@ jobs:
         if: steps.changed-files.outputs.changed_files != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run Docker_Image.yml
+        run: gh workflow run Docker_Image.yml --ref ebeam-tests-fixed
 
       - name: Stop container and remove it 
         run: |
