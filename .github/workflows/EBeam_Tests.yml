@@ -7,7 +7,7 @@ on:
       - '**'
   pull_request:
     branches:
-      - master
+      - ebeam-tests-fixed
 
 jobs:     
   ebeam-lib-pcell-test:
