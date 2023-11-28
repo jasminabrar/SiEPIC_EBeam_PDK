@@ -30,21 +30,21 @@ jobs:
         run: docker cp $GITHUB_WORKSPACE/klayout/EBeam/pymacros ebeam_test:/home/pymacros
 
       - name: Get pcell .py files added to EBeam library folders
-        id: changed-files
+        id: added-files
         run: |
           if ${{ github.event_name == 'pull_request' }}; then
-              echo "changed_files=$(git diff --name-only -r HEAD^1 HEAD | grep -E 'klayout/EBeam/pymacros/(pcells_EBeam|pcells_SiN|pcells_EBeam_Dream|pcells_EBeam_Beta)/' | xargs)" >> $GITHUB_OUTPUT
+              echo "added_files=$(git diff --name-status -r HEAD^1 HEAD | grep -E '^A' | grep -E 'klayout/EBeam/pymacros/(pcells_EBeam|pcells_SiN|pcells_EBeam_Dream|pcells_EBeam_Beta)/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
           else
-              echo "changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep -E 'klayout/EBeam/pymacros/(pcells_EBeam|pcells_SiN|pcells_EBeam_Dream|pcells_EBeam_Beta)/' | xargs)" >> $GITHUB_OUTPUT
+              echo "added_files=$(git diff --name-status ${{ github.event.before }} ${{ github.event.after }} | grep -E '^A' | grep -E 'klayout/EBeam/pymacros/(pcells_EBeam|pcells_SiN|pcells_EBeam_Dream|pcells_EBeam_Beta)/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
           fi
           
       - name: Copy new pcell files into klayout in Docker container
         run: |
-          changed_files="${{ steps.changed-files.outputs.changed_files }}"
+          added_files="${{ steps.added-files.outputs.added_files }}"
       
           IFS=$'\n' # Set Internal Field Separator to newline to handle file paths with spaces
 
-          for file in $changed_files; do
+          for file in $added_files; do
             # Determine the library folder based on the file path
             folder=$(dirname "$file")
 
@@ -68,7 +68,7 @@ jobs:
         continue-on-error: true
 
       - name: Trigger Docker build workflow if new pcells were added on a push #on a merged PR is taken care of in docker build action
-        if: github.event_name == 'push' && steps.changed-files.outputs.changed_files != ''
+        if: github.event_name == 'push' && steps.added-files.outputs.added_files != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run Docker_Image.yml --ref ebeam-tests-fixed
