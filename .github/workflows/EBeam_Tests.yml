@@ -61,10 +61,15 @@ jobs:
             echo "Copied $file to $destination_path"
           done
 
-
       - name: Run KLayout Python script inside container and capture exit code
         run: docker exec ebeam_test klayout -zz -r pymacros/EBeam_Lib_PCellTests.py || echo "KLAYOUT_EXIT_CODE=$?" >> $GITHUB_ENV
         continue-on-error: true
+
+      - name: Trigger Docker build workflow if new pcells were added
+        if: steps.changed-files.outputs.changed_files != ''
+        uses: actions/workflow-dispatch@v2
+        with:
+          workflow: 'Create and Publish Docker Image'
 
       - name: Stop container and remove it 
         run: |
