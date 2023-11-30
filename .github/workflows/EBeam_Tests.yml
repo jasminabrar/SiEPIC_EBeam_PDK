@@ -29,11 +29,15 @@ jobs:
                 docker exec ebeam_test chmod +x /home/pymacros/EBeam_Lib_PCellTests.py
 
       - name: Install coverage inside the container
-        run: docker exec ebeam_test /usr/bin/python3 -m pip install coverage
+        run: |
+                docker exec ebeam_test /usr/bin/python3 -m pip install pytest 
+                docker exec ebeam_test /usr/bin/python3 -m pip install klayout
 
       - name: Run KLayout Python script inside container and capture exit code
-        run: docker exec ebeam_test /usr/bin/python3 /home/pymacros/run_tests.py || echo "KLAYOUT_EXIT_CODE=$?" >> $GITHUB_ENV
-        shell: /usr/bin/bash -e {0}
+        run: docker exec ebeam_test pytest /home/pymacros/EBeam_Lib_PCellTests.py --cov=/home/pymacros  || echo "KLAYOUT_EXIT_CODE=$?" >> $GITHUB_ENV
+        # run: docker exec ebeam_test /usr/bin/python3 /home/pymacros/run_tests.py || echo "KLAYOUT_EXIT_CODE=$?" >> $GITHUB_ENV
+        # shell: /usr/bin/bash -e {0}
+
         # run: docker exec ebeam_test klayout -zz -r pymacros/EBeam_Lib_PCellTests.py || echo "KLAYOUT_EXIT_CODE=$?" >> $GITHUB_ENV
         # continue-on-error: true
 
