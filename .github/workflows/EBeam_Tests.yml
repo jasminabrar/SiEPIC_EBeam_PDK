@@ -37,17 +37,17 @@ jobs:
         id: changed-files
         run: |
 
-          if [ "${{ github.repository }}" == "${{ env.GITHUB_REPOSITORY }}" ]; then #if we are in siepic ebeam pdk main, in this case just copy entire siepic_ebeam_pdk/klayout/ folder klayout!
+          if [ "${{ github.repository }}" == "${{ env.GITHUB_REPOSITORY }}" ]; then
+            # If we are in the main repository, copy entire siepic_ebeam_pdk/klayout/ folder to ebeam_test
             docker exec -it ebeam_test rm -r /root/.klayout/salt/SiEPIC_EBeam_PDK/klayout
             docker cp $GITHUB_WORKSPACE/klayout ebeam_test:/root/.klayout/salt/SiEPIC_EBeam_PDK
           else 
-            changed_files=$(git diff --name-only FETCH_HEAD) #pull requests run the action in the repo opening the PR so this works
-                                                      #open a PR to my forked main to test
+            # If we are in a forked repository or another branch, copy changed files to ebeam_test
+            changed_files=$(git diff --name-only FETCH_HEAD)
 
             IFS=$'\n' # Set Internal Field Separator to newline to handle multiple files
 
             for file in $changed_files; do
-
               # Determine the library folder based on the file path
               folder=$(dirname "$file")
 
@@ -64,7 +64,9 @@ jobs:
               docker cp "$GITHUB_WORKSPACE/$file" ebeam_test:"$destination_path/$file"
 
               echo "Copied $file to $destination_path/$file"
+            done
           fi
+
       
       - name: Run KLayout Python script inside container and capture exit code
         run: docker exec ebeam_test klayout -zz -r pymacros/EBeam_Lib_PCellTests.py || echo "KLAYOUT_EXIT_CODE=$?" >> $GITHUB_ENV
