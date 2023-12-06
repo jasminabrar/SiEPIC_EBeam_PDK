@@ -42,7 +42,8 @@ jobs:
       - name: Copy new pcell files into klayout in Docker container
         run: |
 
-          docker exec -it ebeam_test rm -r /root/.klayout/salt/SiEPIC_EBeam_PDK/klayout
+          echo "before removing ebeam pdk from klayout"
+          docker exec ebeam_test rm -r /root/.klayout/salt/SiEPIC_EBeam_PDK/klayout
           echo "removed ebeam pdk from klayout"
   
           docker cp "$GITHUB_WORKSPACE/klayout" ebeam_test:"/root/.klayout/salt/SiEPIC_EBeam_PDK"
