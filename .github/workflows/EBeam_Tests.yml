@@ -29,15 +29,28 @@ jobs:
       - name: Copy pymacros folder to docker container
         run: docker cp $GITHUB_WORKSPACE/klayout/EBeam/pymacros ebeam_test:/home/pymacros
 
-      - name: Get pcell .py files added to EBeam library folders
-        id: added-files
+      - name: Set up main repository as a remote
+        run: git remote add main-repo https://github.com/SiEPIC/SiEPIC_EBeam_PDK.git
+
+      - name: Fetch changes from main repository
+        run: git fetch main-repo
+
+      - name: Find files that are different
+        id: changed-files
         run: |
-          if ${{ github.event_name == 'pull_request' }}; then
-              echo "added_files=$(git diff --name-status -r HEAD^1 HEAD | grep -E '^[ACM]' | grep -E 'klayout/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
-          else
-              echo "added_files=$(git diff --name-status ${{ github.event.before }} ${{ github.event.after }} | grep -E '^[ACM]' | grep -E 'klayout/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
-          fi
-          echo "Added files: $added_files"
+          changed_files=$(git diff --name-only main-repo/main)
+          echo "Changed files: $changed_files"
+          echo "changed_files=${changed_files}" >> $GITHUB_ENV
+
+      # - name: Get pcell .py files added to EBeam library folders
+      #   id: added-files
+      #   run: |
+      #     if ${{ github.event_name == 'pull_request' }}; then
+      #         echo "added_files=$(git diff --name-status -r HEAD^1 HEAD | grep -E '^[ACM]' | grep -E 'klayout/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
+      #     else
+      #         echo "added_files=$(git diff --name-status ${{ github.event.before }} ${{ github.event.after }} | grep -E '^[ACM]' | grep -E 'klayout/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
+      #     fi
+      #     echo "Added files: $added_files"
           
       - name: Copy new pcell files into klayout in Docker container
         run: |
@@ -48,9 +61,10 @@ jobs:
   
           # docker cp "$GITHUB_WORKSPACE/klayout" ebeam_test:"/root/.klayout/salt/SiEPIC_EBeam_PDK"
           
-          added_files="${{ steps.added-files.outputs.added_files }}"
+          #added_files="${{ steps.added-files.outputs.added_files }}"
+          added_files="${{ env.changed_files }}"
       
-          IFS=' ' # Set Internal Field Separator to space to handle multiple pcells
+          IFS=$'\n' # Set Internal Field Separator to space to handle multiple pcells
 
           for file in $added_files; do
 
