@@ -91,9 +91,7 @@ for i in range(len(library_folders)):
             pcell = new_layout.create_cell(mm, all_params)
 
             # check that there were no errors generated from the pcell
-            
             error_shapes = pcell.shapes(new_layout.error_layer())
-            #print(error_shapes.size())
 
             for error in error_shapes.each():
                 raise PCellImplementationError(mm, library_name, error.text)
