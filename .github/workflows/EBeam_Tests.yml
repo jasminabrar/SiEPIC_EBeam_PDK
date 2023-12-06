@@ -18,9 +18,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-            repository: jasminabrar/SiEPIC_EBeam_PDK
-            ref: catch-pcell-errors
-            fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
+            repository: ${{ github.repository_owner }}/SiEPIC_EBeam_PDK
+            ref: ${{ github.ref }}
 
       - name: Pull siepic_klayout image
         run: docker pull ghcr.io/jasminabrar/siepic_ebeam_pdk/siepic_klayout:master-latest
@@ -31,22 +30,15 @@ jobs:
       - name: Copy pymacros folder to docker container
         run: docker cp $GITHUB_WORKSPACE/klayout/EBeam/pymacros ebeam_test:/home/pymacros
 
-      - name: Set up main repository as a remote
-        run: git remote add main-repo https://github.com/SiEPIC/SiEPIC_EBeam_PDK.git
-
       - name: Fetch changes from main repository
         run: git fetch https://github.com/SiEPIC/SiEPIC_EBeam_PDK.git master
 
       - name: Find files that are different
         id: changed-files
         run: |
-          # changed_files=$(git diff --name-only FETCH_HEAD)
-          # echo "Changed files: $changed_files"
-          # echo "changed_files=$(git diff --name-only FETCH_HEAD)" >> $GITHUB_OUTPUT
-          # echo "changed files: $changed_files"
           changed_files=$(git diff --name-only FETCH_HEAD)
       
-          IFS=$'\n' # Set Internal Field Separator to space to handle multiple pcells
+          IFS=$'\n' # Set Internal Field Separator to newline to handle multiple files
 
           for file in $changed_files; do
 
@@ -60,7 +52,6 @@ jobs:
             filename=$(basename "$file")
 
             # Define the destination path in the Docker container
-            #destination_path="/root/.klayout/salt/SiEPIC_EBeam_PDK/klayout/EBeam/pymacros/$folder"
             destination_path="/root/.klayout/salt/SiEPIC_EBeam_PDK"
 
             # Perform docker cp for each file
@@ -68,52 +59,6 @@ jobs:
 
             echo "Copied $file to $destination_path/$file"
           done
-                
-
-      # - name: Get pcell .py files added to EBeam library folders
-      #   id: added-files
-      #   run: |
-      #     if ${{ github.event_name == 'pull_request' }}; then
-      #         echo "added_files=$(git diff --name-status -r HEAD^1 HEAD | grep -E '^[ACM]' | grep -E 'klayout/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
-      #     else
-      #         echo "added_files=$(git diff --name-status ${{ github.event.before }} ${{ github.event.after }} | grep -E '^[ACM]' | grep -E 'klayout/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
-      #     fi
-      #     echo "Added files: $added_files"
-          
-      # - name: Copy new pcell files into klayout in Docker container
-      #   run: |
-
-      #     # echo "before removing ebeam pdk from klayout"
-      #     # docker exec ebeam_test rm -r /root/.klayout/salt/SiEPIC_EBeam_PDK/klayout
-      #     # echo "removed ebeam pdk from klayout"
-  
-      #     # docker cp "$GITHUB_WORKSPACE/klayout" ebeam_test:"/root/.klayout/salt/SiEPIC_EBeam_PDK"
-          
-      #     #added_files="${{ steps.added-files.outputs.added_files }}"
-      #     added_files="$changed_files""
-      
-      #     IFS=$'\n' # Set Internal Field Separator to space to handle multiple pcells
-
-      #     for file in $added_files; do
-
-      #       # Determine the library folder based on the file path
-      #       folder=$(dirname "$file")
-
-      #       # Extract the last part of the path (directory name)
-      #       folder=$(basename "$folder")
-
-      #       # Extract the filename
-      #       filename=$(basename "$file")
-
-      #       # Define the destination path in the Docker container
-      #       #destination_path="/root/.klayout/salt/SiEPIC_EBeam_PDK/klayout/EBeam/pymacros/$folder"
-      #       destination_path="/root/.klayout/salt/SiEPIC_EBeam_PDK"
-
-      #       # Perform docker cp for each file
-      #       docker cp "$GITHUB_WORKSPACE/$file" ebeam_test:"$destination_path/$file"
-
-      #       echo "Copied $file to $destination_path"
-      #     done
       
       - name: Run KLayout Python script inside container and capture exit code
         run: docker exec ebeam_test klayout -zz -r pymacros/EBeam_Lib_PCellTests.py || echo "KLAYOUT_EXIT_CODE=$?" >> $GITHUB_ENV
