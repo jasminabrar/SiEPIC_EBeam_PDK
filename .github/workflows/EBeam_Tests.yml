@@ -41,6 +41,10 @@ jobs:
           
       - name: Copy new pcell files into klayout in Docker container
         run: |
+
+          destination_path="/root/.klayout/salt/SiEPIC_EBeam_PDK/klayout/EBeam/pymacros/pcells_EBeam"
+          docker cp -f "$GITHUB_WORKSPACE/klayout/EBeam/pymacros/pcells_EBeam/Waveguide.py" ebeam_test:"$destination_path"
+          
           added_files="${{ steps.added-files.outputs.added_files }}"
       
           IFS=' ' # Set Internal Field Separator to space to handle multiple pcells
