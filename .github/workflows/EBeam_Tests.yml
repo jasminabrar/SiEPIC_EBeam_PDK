@@ -39,7 +39,7 @@ jobs:
 
           # if [ "${{ github.repository }}" == "${{ env.GITHUB_REPOSITORY }}" ]; then
             # If we are in the main repository, copy entire siepic_ebeam_pdk/klayout/ folder to ebeam_test
-          docker exec -it ebeam_test rm -r /root/.klayout/salt/SiEPIC_EBeam_PDK/klayout
+          docker exec ebeam_test rm -r /root/.klayout/salt/SiEPIC_EBeam_PDK/klayout
           docker cp $GITHUB_WORKSPACE/klayout ebeam_test:/root/.klayout/salt/SiEPIC_EBeam_PDK
           # else 
           #   # If we are in a forked repository or another branch, copy changed files to ebeam_test
