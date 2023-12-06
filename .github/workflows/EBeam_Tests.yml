@@ -36,29 +36,35 @@ jobs:
       - name: Find files that are different
         id: changed-files
         run: |
-          changed_files=$(git diff --name-only FETCH_HEAD)
-      
-          IFS=$'\n' # Set Internal Field Separator to newline to handle multiple files
 
-          for file in $changed_files; do
+          if [ "${{ github.repository }}" == "${{ env.GITHUB_REPOSITORY }}" ]; then #if we are in siepic ebeam pdk main, in this case just copy entire siepic_ebeam_pdk/klayout/ folder klayout!
+            docker exec -it ebeam_test rm -r /root/.klayout/salt/SiEPIC_EBeam_PDK/klayout
+            docker cp $GITHUB_WORKSPACE/klayout ebeam_test:/root/.klayout/salt/SiEPIC_EBeam_PDK
+          else 
+            changed_files=$(git diff --name-only FETCH_HEAD) #pull requests run the action in the repo opening the PR so this works
+                                                      #open a PR to my forked main to test
 
-            # Determine the library folder based on the file path
-            folder=$(dirname "$file")
+            IFS=$'\n' # Set Internal Field Separator to newline to handle multiple files
 
-            # Extract the last part of the path (directory name)
-            folder=$(basename "$folder")
+            for file in $changed_files; do
 
-            # Extract the filename
-            filename=$(basename "$file")
+              # Determine the library folder based on the file path
+              folder=$(dirname "$file")
 
-            # Define the destination path in the Docker container
-            destination_path="/root/.klayout/salt/SiEPIC_EBeam_PDK"
+              # Extract the last part of the path (directory name)
+              folder=$(basename "$folder")
 
-            # Perform docker cp for each file
-            docker cp "$GITHUB_WORKSPACE/$file" ebeam_test:"$destination_path/$file"
+              # Extract the filename
+              filename=$(basename "$file")
 
-            echo "Copied $file to $destination_path/$file"
-          done
+              # Define the destination path in the Docker container
+              destination_path="/root/.klayout/salt/SiEPIC_EBeam_PDK"
+
+              # Perform docker cp for each file
+              docker cp "$GITHUB_WORKSPACE/$file" ebeam_test:"$destination_path/$file"
+
+              echo "Copied $file to $destination_path/$file"
+          fi
       
       - name: Run KLayout Python script inside container and capture exit code
         run: docker exec ebeam_test klayout -zz -r pymacros/EBeam_Lib_PCellTests.py || echo "KLAYOUT_EXIT_CODE=$?" >> $GITHUB_ENV
