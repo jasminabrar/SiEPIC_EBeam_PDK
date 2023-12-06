@@ -41,6 +41,12 @@ jobs:
           
       - name: Copy new pcell files into klayout in Docker container
         run: |
+
+          docker exec -it ebeam_test rm -r /root/.klayout/salt/SiEPIC_EBeam_PDK/klayout
+          echo "removed ebeam pdk from klayout"
+  
+          docker cp "$GITHUB_WORKSPACE/klayout" ebeam_test:"/root/.klayout/salt/SiEPIC_EBeam_PDK"
+          
           added_files="${{ steps.added-files.outputs.added_files }}"
       
           IFS=' ' # Set Internal Field Separator to space to handle multiple pcells
