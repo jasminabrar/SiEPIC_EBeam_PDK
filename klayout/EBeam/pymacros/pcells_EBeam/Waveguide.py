@@ -11,7 +11,7 @@ Lukas Chrostowski 2022/04/01
 from pya import *
 import pya
 
-#class Waveguide(pya.PCellDeclarationHelper):
+class Waveguide(pya.PCellDeclarationHelper):
 
   def __init__(self):
     # Important: initialize the super class
@@ -66,7 +66,7 @@ import pya
         
   def produce_impl(self):
     1/0
-
+    
     print("!!!!!waveguide implementation")
     # https://github.com/KLayout/klayout/issues/879
     # tech = self.layout.library().technology
