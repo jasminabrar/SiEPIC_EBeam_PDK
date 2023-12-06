@@ -11,7 +11,7 @@ Lukas Chrostowski 2022/04/01
 from pya import *
 import pya
 
-class Waveguide(pya.PCellDeclarationHelper):
+class Wavede(pya.PCellDeclarationHelper):
 
   def __init__(self):
     # Important: initialize the super class
