@@ -18,6 +18,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
+            repository: jasminabrar/SiEPIC_EBeam_PDK
+            ref: catch-pcell-errors
             fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
 
       - name: Pull siepic_klayout image
