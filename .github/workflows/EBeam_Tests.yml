@@ -42,7 +42,7 @@ jobs:
         run: |
           changed_files=$(git diff --name-only FETCH_HEAD)
           echo "Changed files: $changed_files"
-          echo "changed_files=${changed_files}" >> $GITHUB_ENV
+          echo "changed_files=$changed_files" >> $GITHUB_ENV
 
       # - name: Get pcell .py files added to EBeam library folders
       #   id: added-files
