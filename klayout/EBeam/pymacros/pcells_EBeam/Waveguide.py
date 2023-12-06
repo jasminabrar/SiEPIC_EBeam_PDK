@@ -65,9 +65,7 @@ class Waveguide(pya.PCellDeclarationHelper):
     self.path = self.shape.path
         
   def produce_impl(self):
-    1/0
-    
-    print("!!!!!waveguide implementation")
+
     # https://github.com/KLayout/klayout/issues/879
     # tech = self.layout.library().technology
         
