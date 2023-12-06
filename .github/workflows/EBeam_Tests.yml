@@ -40,9 +40,10 @@ jobs:
       - name: Find files that are different
         id: changed-files
         run: |
-          changed_files=$(git diff --name-only FETCH_HEAD)
-          echo "Changed files: $changed_files"
-          echo "changed_files=$changed_files" >> $GITHUB_ENV
+          # changed_files=$(git diff --name-only FETCH_HEAD)
+          # echo "Changed files: $changed_files"
+          echo "changed_files=$(git diff --name-only FETCH_HEAD)" >> $GITHUB_OUTPUT
+          echo "changed files: $changed_files"
 
       # - name: Get pcell .py files added to EBeam library folders
       #   id: added-files
@@ -64,7 +65,7 @@ jobs:
           # docker cp "$GITHUB_WORKSPACE/klayout" ebeam_test:"/root/.klayout/salt/SiEPIC_EBeam_PDK"
           
           #added_files="${{ steps.added-files.outputs.added_files }}"
-          added_files="${{ env.changed_files }}"
+          added_files="${{ steps.changed-files.outputs.changed_files}}"
       
           IFS=$'\n' # Set Internal Field Separator to space to handle multiple pcells
 
