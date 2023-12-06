@@ -35,12 +35,12 @@ jobs:
         run: git remote add main-repo https://github.com/SiEPIC/SiEPIC_EBeam_PDK.git
 
       - name: Fetch changes from main repository
-        run: git fetch main-repo
+        run: git fetch main-repo main
 
       - name: Find files that are different
         id: changed-files
         run: |
-          changed_files=$(git diff --name-only main-repo/main)
+          changed_files=$(git diff --name-only FETCH_HEAD)
           echo "Changed files: $changed_files"
           echo "changed_files=${changed_files}" >> $GITHUB_ENV
 
