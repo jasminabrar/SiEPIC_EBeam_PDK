@@ -71,7 +71,7 @@ class Waveguide(pya.PCellDeclarationHelper):
         
     # Make sure the technology name is associated with the layout
     #  PCells don't seem to know to whom they belong!
-    if self.layout.technology_name == '':
+    if self.layt.technology_name == '':
         self.layout.technology_name = self.technology_name
 
     # Draw the waveguide geometry, new function in SiEPIC-Tools v0.3.90
