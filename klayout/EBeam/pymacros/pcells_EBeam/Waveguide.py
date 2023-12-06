@@ -66,12 +66,14 @@ class Waveguide(pya.PCellDeclarationHelper):
         
   def produce_impl(self):
     1/0
+
+    print("!!!!!waveguide implementation")
     # https://github.com/KLayout/klayout/issues/879
     # tech = self.layout.library().technology
         
     # Make sure the technology name is associated with the layout
     #  PCells don't seem to know to whom they belong!
-    if self.layt.technology_name == '':
+    if self.layout.technology_name == '':
         self.layout.technology_name = self.technology_name
 
     # Draw the waveguide geometry, new function in SiEPIC-Tools v0.3.90
