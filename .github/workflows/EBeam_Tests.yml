@@ -37,6 +37,7 @@ jobs:
           else
               echo "added_files=$(git diff --name-status ${{ github.event.before }} ${{ github.event.after }} | grep -E '^A' | grep -E 'klayout/EBeam/pymacros/(pcells_EBeam|pcells_SiN|pcells_EBeam_Dream|pcells_EBeam_Beta)/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
           fi
+          echo "Added files: $added_files"
           
       - name: Copy new pcell files into klayout in Docker container
         run: |
