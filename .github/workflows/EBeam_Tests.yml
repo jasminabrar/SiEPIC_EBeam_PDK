@@ -66,7 +66,7 @@ jobs:
             # Perform docker cp for each file
             docker cp "$GITHUB_WORKSPACE/$file" ebeam_test:"$destination_path/$file"
 
-            echo "Copied $file to $destination_path"
+            echo "Copied $file to $destination_path/$file"
           done
                 
 
