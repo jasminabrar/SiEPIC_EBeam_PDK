@@ -33,21 +33,14 @@ jobs:
         id: added-files
         run: |
           if ${{ github.event_name == 'pull_request' }}; then
-              echo "added_files=$(git diff --name-status -r HEAD^1 HEAD | grep -E '^A' | grep -E 'klayout/EBeam/pymacros/(pcells_EBeam|pcells_SiN|pcells_EBeam_Dream|pcells_EBeam_Beta)/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
+              echo "added_files=$(git diff --name-status -r HEAD^1 HEAD | grep -E '^[ACM]' | grep -E 'klayout/EBeam/pymacros/(pcells_EBeam|pcells_SiN|pcells_EBeam_Dream|pcells_EBeam_Beta)/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
           else
-              echo "added_files=$(git diff --name-status ${{ github.event.before }} ${{ github.event.after }} | grep -E '^A' | grep -E 'klayout/EBeam/pymacros/(pcells_EBeam|pcells_SiN|pcells_EBeam_Dream|pcells_EBeam_Beta)/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
+              echo "added_files=$(git diff --name-status ${{ github.event.before }} ${{ github.event.after }} | grep -E '^[ACM]' | grep -E 'klayout/EBeam/pymacros/(pcells_EBeam|pcells_SiN|pcells_EBeam_Dream|pcells_EBeam_Beta)/' | awk '{print $2}' | xargs)" >> $GITHUB_OUTPUT
           fi
           echo "Added files: $added_files"
           
       - name: Copy new pcell files into klayout in Docker container
         run: |
-
-          #destination_path="/root/.klayout/salt/SiEPIC_EBeam_PDK/klayout/EBeam/pymacros/pcells_EBeam"
-          #docker cp -f "$GITHUB_WORKSPACE/klayout/EBeam/pymacros/pcells_EBeam/Waveguide.py" ebeam_test:"$destination_path"
-          docker exec -it ebeam_test rm -r /root/.klayout/salt/SiEPIC_EBeam_PDK/klayout
-
-          docker cp $GITHUB_WORKSPACE/klayout ebeam_test:/root/.klayout/salt/SiEPIC_EBeam_PDK
-          
           added_files="${{ steps.added-files.outputs.added_files }}"
       
           IFS=' ' # Set Internal Field Separator to space to handle multiple pcells
