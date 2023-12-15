@@ -1,8 +1,8 @@
 FROM quay.io/centos/centos:stream8
 
 # Update the system and install necessary tools.
-RUN dnf -y update && \
-    dnf -y install wget bzip2 unzip git mesa-dri-drivers python3 python3-pip
+# RUN dnf -y update && \
+#     dnf -y install wget bzip2 unzip git mesa-dri-drivers python3 python3-pip
 
 # # Install Numpy
 # RUN pip3 install numpy
