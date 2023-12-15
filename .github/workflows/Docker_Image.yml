@@ -84,23 +84,24 @@ jobs:
       #   with:
       #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           
-      - name: Build and push Docker image as latest image
-        run: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4 --push --tags latest --labels ${{ steps.meta.outputs.labels }}
-
-      - name: Build and push Docker image as unique image
-        run: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4 --push --tags "${{ github.ref_slug }}${EBEAM_PDK}.${TOOLS}" --labels ${{ steps.meta.outputs.labels }}    
       # - name: Build and push Docker image as latest image
-      #   uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}-latest
-      #     labels: ${{ steps.meta.outputs.labels }}
+      #   run: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4 --push --tags latest --labels ${{ steps.meta.outputs.labels }}
 
       # - name: Build and push Docker image as unique image
-      #   uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: "${{ steps.meta.outputs.tags }}.${{ env.EBEAM_PDK }}.${{ env.TOOLS }}"
-      #     labels: ${{ steps.meta.outputs.labels }}
+      #   run: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4 --push --tags "${{ github.ref_slug }}${EBEAM_PDK}.${TOOLS}" --labels ${{ steps.meta.outputs.labels }}    
+      
+      - name: Build and push Docker image as latest image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          tags: "latest,${{ github.ref_slug }}"
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build and push Docker image as unique image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          tags: "${{ github.ref_slug }}${EBEAM_PDK}.${TOOLS}"
+          labels: ${{ steps.meta.outputs.labels }}
