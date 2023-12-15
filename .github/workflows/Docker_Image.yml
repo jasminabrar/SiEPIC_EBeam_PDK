@@ -96,5 +96,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: "${{ steps.meta.outputs.tags }}.${{ steps.get-version.EBEAM_PDK }}.${{ steps.get-version.TOOLS }}"
+          tags: "${{ steps.meta.outputs.tags }}.$EBEAM_PDK.$TOOLS"
           labels: ${{ steps.meta.outputs.labels }}
