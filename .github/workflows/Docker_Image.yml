@@ -64,6 +64,7 @@ jobs:
             "https://api.github.com/repos/SiEPIC/SiEPIC-Tools/releases/latest" \
             | jq -r .tag_name)
 
+          echo "$EBEAM_PDK, $TOOLS"
           echo "EBEAM_PDK=$EBEAM_PDK" >> $GITHUB_ENV
           echo "TOOLS=$TOOLS" >> $GITHUB_ENV
 
@@ -96,5 +97,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: "${{ steps.meta.outputs.tags }}.$EBEAM_PDK.$TOOLS"
+          tags: "${{ steps.meta.outputs.tags }}.${{ steps.get-version.EBEAM_PDK }}.${{ steps.get-version.TOOLS }}"
           labels: ${{ steps.meta.outputs.labels }}
