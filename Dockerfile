@@ -1,6 +1,6 @@
 FROM quay.io/centos/centos:stream8
 
-#Update the system and install necessary tools.
+# Update the system and install necessary tools.
 RUN dnf -y update && \
     dnf -y install wget bzip2 unzip git mesa-dri-drivers python3 python3-pip
 
@@ -18,7 +18,7 @@ RUN mkdir -p /root/.klayout/salt && \
     git clone https://github.com/SiEPIC/SiEPIC-Tools.git && \
     git clone https://github.com/SiEPIC/SiEPIC_EBeam_PDK.git
 
-#Set the working directory
+# Set the working directory
 WORKDIR /home
 
 # Set PATH
