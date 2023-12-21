@@ -7,10 +7,17 @@ RUN dnf -y update && \
 # Install Numpy
 RUN pip3 install numpy
 
-# Install the newest version of KLayout
-RUN wget https://www.klayout.org/downloads/CentOS_8/klayout-0.28.13-0.x86_64.rpm -O ~/klayout.rpm && \
+# Get the latest version of KLayout from the website
+RUN latest_version=$(curl -s https://www.klayout.org/downloads/CentOS_8/ | grep -oP 'klayout-\K[0-9]+\.[0-9]+\.[0-9]+') && \
+    klayout_url="https://www.klayout.org/downloads/CentOS_8/klayout-${latest_version}-0.x86_64.rpm" && \
+    wget ${klayout_url} -O ~/klayout.rpm && \
     dnf -y localinstall ~/klayout.rpm && \
     rm ~/klayout.rpm
+
+# Install the newest version of KLayout
+#RUN wget https://www.klayout.org/downloads/CentOS_8/klayout-0.28.13-0.x86_64.rpm -O ~/klayout.rpm && \
+#    dnf -y localinstall ~/klayout.rpm && \
+#    rm ~/klayout.rpm
 
 # Clone SiEPIC-Tools and SiEPIC_EBeam_PDK.
 RUN mkdir -p /root/.klayout/salt && \
