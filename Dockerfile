@@ -4,20 +4,17 @@ FROM quay.io/centos/centos:stream8
 RUN dnf -y update && \
     dnf -y install wget bzip2 unzip git mesa-dri-drivers python3 python3-pip
 
-# Install Numpy
-RUN pip3 install numpy
-
 # Get the latest version of KLayout from the website
-RUN latest_version=$(curl -s https://www.klayout.org/downloads/CentOS_8/ | grep -oP 'klayout-\K[0-9]+\.[0-9]+\.[0-9]+') && \
-    klayout_url="https://www.klayout.org/downloads/CentOS_8/klayout-${latest_version}-0.x86_64.rpm" && \
-    wget ${klayout_url} -O ~/klayout.rpm && \
-    dnf -y localinstall ~/klayout.rpm && \
-    rm ~/klayout.rpm
-
-# Install the newest version of KLayout
-#RUN wget https://www.klayout.org/downloads/CentOS_8/klayout-0.28.13-0.x86_64.rpm -O ~/klayout.rpm && \
-#    dnf -y localinstall ~/klayout.rpm && \
-#    rm ~/klayout.rpm
+RUN curl -s https://www.klayout.de/build.html \
+    | grep -oP 'CentOS 8.*?klayout-\d+\.\d+\.\d+-0.x86_64.rpm' \
+    | head -n 1 \
+    | ( read -r klayout_url && \
+        klayout_url="https://www.klayout.de/$klayout_url" && \
+        echo "Downloading KLayout from $klayout_url" && \
+        curl -O $klayout_url && \
+        dnf -y localinstall klayout-*.rpm && \
+        rm klayout-*.rpm \
+      ) || echo "Failed to retrieve KLayout URL"
 
 # Clone SiEPIC-Tools and SiEPIC_EBeam_PDK.
 RUN mkdir -p /root/.klayout/salt && \
