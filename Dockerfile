@@ -1,19 +1,19 @@
-FROM quay.io/centos/centos:stream8
+FROM ubuntu:22.04
 
 # Update the system and install necessary tools.
-RUN dnf -y update && \
-    dnf -y install wget bzip2 unzip git mesa-dri-drivers python3 python3-pip
+RUN apt-get update && \
+    apt-get install -y wget bzip2 unzip git mesa-utils python3 python3-pip
 
 # Get the latest version of KLayout from the website
 RUN curl -s https://www.klayout.de/build.html \
-    | grep -oP 'CentOS 8.*?klayout-\d+\.\d+\.\d+-0.x86_64.rpm' \
+    | grep -oP 'Ubuntu 22.04.*?klayout-\d+\.\d+\.\d+-0_amd64.deb' \
     | head -n 1 \
     | ( read -r klayout_url && \
         klayout_url="https://www.klayout.de/$klayout_url" && \
         echo "Downloading KLayout from $klayout_url" && \
         curl -O $klayout_url && \
-        dnf -y localinstall klayout-*.rpm && \
-        rm klayout-*.rpm \
+        dpkg -i klayout-*.deb && \
+        rm klayout-*.deb \
       ) || echo "Failed to retrieve KLayout URL"
 
 # Clone SiEPIC-Tools and SiEPIC_EBeam_PDK.
