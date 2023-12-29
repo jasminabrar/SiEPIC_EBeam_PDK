@@ -8,12 +8,9 @@ RUN dnf -y update && \
 RUN curl -s https://www.klayout.de/build.html > /tmp/build_page_content.txt && \
     KLAYOUT_VERSION=$(cat /tmp/build_page_content.txt | grep -oP 'CentOS_8.*?klayout-([\d.]+)-0\.x86_64\.rpm' | grep -oP '\d+\.\d+\.\d+' | head -n 1) && \
     KLAYOUT_URL="https://www.klayout.org/downloads/CentOS_8/klayout-${KLAYOUT_VERSION}-0.x86_64.rpm" && \
-    KLAYOUT_FILENAME="klayout-${KLAYOUT_VERSION}-0.x86_64.rpm" && \
-    echo "KLayout Version: ${KLAYOUT_VERSION}" && \
-    echo "Download URL: ${KLAYOUT_URL}" && \
-    wget "$KLAYOUT_URL" -O "/tmp/${KLAYOUT_FILENAME}" && \
-    rpm -Uvh --nodeps "/tmp/${KLAYOUT_FILENAME}" && \
-    rm "/tmp/${KLAYOUT_FILENAME}"
+    wget "$KLAYOUT_URL" -O ~/klayout.rpm && \
+    dnf -y localinstall ~/klayout.rpm && \
+    rm ~/klayout.rpm 
 
 # Clone SiEPIC-Tools and SiEPIC_EBeam_PDK.
 RUN mkdir -p /root/.klayout/salt && \
