@@ -7,9 +7,10 @@ repos:
         # ignore all tests, not just tests data
         exclude: ^tests/
 
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+  - repo: https://github.com/psf/black
+    rev: 23.12.0
     hooks:
+<<<<<<< HEAD
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
@@ -37,3 +38,6 @@ repos:
     hooks:
       - id: j2lint
         args: [--ignore, jinja-statements-delimiter, jinja-statements-indentation, --] #fixes nested node blocks, fixes delimeters
+=======
+      - id: black
+>>>>>>> c03c87e051f2c06a426671dfe0536ce3272270be
