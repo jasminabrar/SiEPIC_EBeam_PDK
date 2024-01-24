@@ -78,8 +78,8 @@ jobs:
           TABLE=$(cat <<EOF
           | Tool                 |               Version                      |
           | -------------------- | --------------------------------------     |  
-          | SiEPIC EBeam PDK     |   ${steps.ebeampdk.outputs.ebeampdk}       |
-          | SiEPIC Tools         |   ${steps.siepictools.outputs.siepictools} |
+          | SiEPIC EBeam PDK     |   $(echo "${{ steps.ebeampdk.outputs.ebeampdk }}") |
+          | SiEPIC Tools         |   $(echo "${{ steps.siepictools.outputs.siepictools }}") |
           | KLayout              |   0.28.13                                  |
           | Python               | `<python>`                                 |
           EOF
