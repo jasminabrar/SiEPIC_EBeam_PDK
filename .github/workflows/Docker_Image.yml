@@ -96,7 +96,7 @@ jobs:
 
           git add README.md
           git commit -m "update README version table"
-          git push 
+          git push origin version-table
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
