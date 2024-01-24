@@ -116,3 +116,12 @@ I am personally using <a href="https://desktop.github.com/">GitHub desktop</a> t
 ![Screenshot2](https://s3.amazonaws.com/edx-course-phot1x-chrostowski/PastedGraphic-10.png)
 ![Screenshot3](https://s3.amazonaws.com/edx-course-phot1x-chrostowski/KLayout_INTERCONNECT.png)
 
+# Versions of tools in repo Docker image
+
+| Tool                 | Version         |
+| -------------------- | --------------- |  
+| SiEPIC EBeam PDK     | `<ebeampdk>`    |
+| SiEPIC Tools         | `<siepictools>` |
+| KLayout              | `<klayout>`     |
+| Python               | `<python>`      |
+
