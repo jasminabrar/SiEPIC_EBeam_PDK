@@ -65,6 +65,38 @@ jobs:
           echo "::set-output name=siepictools::${SIEPIC_TOOLS}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update ReadME version table
+        run: |
+          start_table="<!-- start-table -->"
+          end_table="<!-- end-table -->"
+
+          # remove current URL
+          sed -i "/$start_table/,/$end_table/d" README.md
+
+          # set table variable
+          TABLE=$(cat <<EOF
+          | Tool                 |               Version                   |
+          | -------------------- | --------------------------------------  |  
+          | SiEPIC EBeam PDK     |   steps.ebeampdk.outputs.ebeampdk       |
+          | SiEPIC Tools         |   steps.siepictools.outputs.siepictools |
+          | KLayout              |   0.28.13                               |
+          | Python               | `<python>`                              |
+          EOF
+          )
+
+          # add new URL
+          printf "$start_table\n$TABLE\n$end_table\n" >> README.md
+
+      - name: commit and push changes to README 
+        run: |
+          git diff
+          git config --local user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --local user.name "${{ github.actor }}"
+
+          git add README.md
+          git commit -m "update README with new artifact url: $ARTIFACT_URL"
+          git push 
         
       - name: Log in to the container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
@@ -96,24 +128,3 @@ jobs:
           tags: "${{ steps.meta.outputs.tags }}.${{ steps.ebeampdk.outputs.ebeampdk }}.${{ steps.siepictools.outputs.siepictools}}"
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Update ReadME version table
-        run: |
-          start_table="<!-- start-table -->"
-          end_table="<!-- end-table -->"
-
-          # remove current URL
-          sed -i "/$start_table/,/$end_table/d" README.md
-
-          # set table variable
-          TABLE=$(cat <<EOF
-          | Tool                 |               Version                   |
-          | -------------------- | --------------------------------------  |  
-          | SiEPIC EBeam PDK     |   steps.ebeampdk.outputs.ebeampdk       |
-          | SiEPIC Tools         |   steps.siepictools.outputs.siepictools |
-          | KLayout              |   0.28.13                               |
-          | Python               | `<python>`                              |
-          EOF
-          )
-
-          # add new URL
-          printf "$start_table\n$TABLE\n$end_table\n" >> README.md
