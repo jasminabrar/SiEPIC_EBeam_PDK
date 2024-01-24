@@ -95,3 +95,25 @@ jobs:
           push: true
           tags: "${{ steps.meta.outputs.tags }}.${{ steps.ebeampdk.outputs.ebeampdk }}.${{ steps.siepictools.outputs.siepictools}}"
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Update ReadME version table
+        run: |
+          start_table="<!-- start-table -->"
+          end_table="<!-- end-table -->"
+
+          # remove current URL
+          sed -i "/$start_table/,/$end_table/d" README.md
+
+          # set table variable
+          TABLE=$(cat <<EOF
+          | Tool                 |               Version                   |
+          | -------------------- | --------------------------------------  |  
+          | SiEPIC EBeam PDK     |   steps.ebeampdk.outputs.ebeampdk       |
+          | SiEPIC Tools         |   steps.siepictools.outputs.siepictools |
+          | KLayout              |   0.28.13                               |
+          | Python               | `<python>`                              |
+          EOF
+          )
+
+          # add new URL
+          printf "$start_table\n$TABLE\n$end_table\n" >> README.md
