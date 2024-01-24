@@ -76,12 +76,12 @@ jobs:
 
           # set table variable
           TABLE=$(cat <<EOF
-          | Tool                 |               Version                   |
-          | -------------------- | --------------------------------------  |  
-          | SiEPIC EBeam PDK     |   steps.ebeampdk.outputs.ebeampdk       |
-          | SiEPIC Tools         |   steps.siepictools.outputs.siepictools |
-          | KLayout              |   0.28.13                               |
-          | Python               | `<python>`                              |
+          | Tool                 |               Version                      |
+          | -------------------- | --------------------------------------     |  
+          | SiEPIC EBeam PDK     |   ${steps.ebeampdk.outputs.ebeampdk}       |
+          | SiEPIC Tools         |   ${steps.siepictools.outputs.siepictools} |
+          | KLayout              |   0.28.13                                  |
+          | Python               | `<python>`                                 |
           EOF
           )
 
@@ -95,8 +95,10 @@ jobs:
           git config --local user.name "${{ github.actor }}"
 
           git add README.md
-          git commit -m "update README with new artifact url: $ARTIFACT_URL"
+          git commit -m "update README version table"
           git push 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Log in to the container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
