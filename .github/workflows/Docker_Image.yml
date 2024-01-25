@@ -57,7 +57,7 @@ jobs:
             "https://api.github.com/repos/SiEPIC/SiEPIC_EBeam_PDK/releases/latest" \
             | jq -r .tag_name)
           
-          echo "::set-output name=ebeampdk::${EBEAM_PDK}"
+          echo "EBEAM_PDK=$EBEAM_PDK" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -69,7 +69,7 @@ jobs:
             "https://api.github.com/repos/SiEPIC/SiEPIC-Tools/releases/latest" \
             | jq -r .tag_name)
           
-          echo "::set-output name=siepictools::${SIEPIC_TOOLS}"
+          echo "SIEPIC_TOOLS=$SIEPIC_TOOLS" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -78,22 +78,34 @@ jobs:
           start_table="<!-- start-table -->"
           end_table="<!-- end-table -->"
 
-          # remove current URL
-          sed -i "/$start_table/,/$end_table/d" README.md
+          # read current table and check if it needs to be updated with a new version
+          table_content=$(sed -n "/$start_table/,/$end_table/p" README.md)
 
-          # set table variable
-          TABLE=$(cat <<EOF
-          | Tool                 | Version         |
-          | -------------------- | --------------- |  
-          | SiEPIC EBeam PDK     |   $(echo "${{ steps.ebeampdk.outputs.ebeampdk }}") |
-          | SiEPIC Tools         |   $(echo "${{ steps.siepictools.outputs.siepictools }}") |
-          | KLayout              |   0.28.13  |
-          | Python               | `<python>` |
-          EOF
-          )
+          table_ebeam_pdk=$(echo "$table_content" | awk -F'|' 'NR==3 {gsub(/^[ \t]+|[ \t]+$/,"",$2); print $2}')
+          table_siepic_tools=$(echo "$table_content" | awk -F'|' 'NR==4 {gsub(/^[ \t]+|[ \t]+$/,"",$2); print $2}')
 
-          # add new URL
-          printf "$start_table\n$TABLE\n$end_table\n" >> README.md
+          # change to !=, keep as == for testing
+          if [ "$table_ebeam_pdk" == "$EBEAM_PDK" ] || [ "$table_siepic_tools" == "${{ SIEPIC_TOOLS }}" ]; then
+            echo "Update version table Ebeam PDK to $EBEAM_PDK and SiEPIC Tools to $SIEPIC_TOOLS"
+            # remove current URL
+            sed -i "/$start_table/,/$end_table/d" README.md
+  
+            # set table variable
+            TABLE=$(cat <<EOF
+            | Tool                 | Version         |
+            | -------------------- | --------------- |  
+            | SiEPIC EBeam PDK     |   $(echo "${{ steps.ebeampdk.outputs.ebeampdk }}") |
+            | SiEPIC Tools         |   $(echo "${{ steps.siepictools.outputs.siepictools }}") |
+            | KLayout              |   0.28.13  |
+            | Python               | `<python>` |
+            EOF
+            )
+  
+            # add new URL
+            printf "$start_table\n$TABLE\n$end_table\n" >> README.md
+          else
+            echo "No updates needed to version table"
+          fi
 
       - name: commit and push changes to README 
         run: |
@@ -134,6 +146,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: "${{ steps.meta.outputs.tags }}.${{ steps.ebeampdk.outputs.ebeampdk }}.${{ steps.siepictools.outputs.siepictools}}"
+          tags: "${{ steps.meta.outputs.tags }}.${{ env.EBEAM_PDK }}.${{ env.SIEPIC_TOOLS }}"
           labels: ${{ steps.meta.outputs.labels }}
 
