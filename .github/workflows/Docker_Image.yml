@@ -85,7 +85,7 @@ jobs:
           table_siepic_tools=$(echo "$table_content" | awk -F'|' 'NR==4 {gsub(/^[ \t]+|[ \t]+$/,"",$2); print $2}')
 
           # change to !=, keep as == for testing
-          if [ "$table_ebeam_pdk" == "$EBEAM_PDK" ] || [ "$table_siepic_tools" == "${{ SIEPIC_TOOLS }}" ]; then
+          if [ "$table_ebeam_pdk" == "$EBEAM_PDK" ] || [ "$table_siepic_tools" == "$SIEPIC_TOOLS" ]; then
             echo "Update version table Ebeam PDK to $EBEAM_PDK and SiEPIC Tools to $SIEPIC_TOOLS"
             # remove current URL
             sed -i "/$start_table/,/$end_table/d" README.md
