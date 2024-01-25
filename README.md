@@ -120,9 +120,9 @@ I am personally using <a href="https://desktop.github.com/">GitHub desktop</a> t
 <!-- start-table -->
 | Tool                 | Version         |
 | -------------------- | --------------- |  
-| SiEPIC EBeam PDK     | `<ebeampdk>`    |
-| SiEPIC Tools         | `<siepictools>` |
-| KLayout              | `<klayout>`     |
-| Python               | `<python>`      |
+| SiEPIC EBeam PDK     | v0.4.3          |
+| SiEPIC Tools         | v0.5.4          |
+| KLayout              | 0.28.13         |
+| Python               | 3.11            |
 <!-- end-table -->
 
