@@ -95,6 +95,9 @@ jobs:
           table_ebeam_pdk=$(echo "$table_content" | awk -F'|' 'NR==3 {gsub(/^[ \t]+|[ \t]+$/,"",$2); print $2}')
           table_siepic_tools=$(echo "$table_content" | awk -F'|' 'NR==4 {gsub(/^[ \t]+|[ \t]+$/,"",$2); print $2}')
 
+          echo "table ebeam pdk = $table_ebeam_pdk"
+          echo "table siepic tools = $table_siepic_tools"
+          
           # change to !=, keep as == for testing
           if [ "$table_ebeam_pdk" == "$EBEAM_PDK" ] || [ "$table_siepic_tools" == "$SIEPIC_TOOLS" ]; then
             echo "Update version table Ebeam PDK to $EBEAM_PDK and SiEPIC Tools to $SIEPIC_TOOLS"
