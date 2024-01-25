@@ -28,6 +28,11 @@ jobs:
       packages: write
       
     steps:
+
+      - name: Debug GitHub Token
+        run: |
+          echo "GitHub Token: ${{ secrets.GITHUB_TOKEN }}"
+
       - name: Check pull request was merged
         if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == false
         run: |
