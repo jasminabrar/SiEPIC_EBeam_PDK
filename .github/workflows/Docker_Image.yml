@@ -78,6 +78,17 @@ jobs:
           start_table="<!-- start-table -->"
           end_table="<!-- end-table -->"
 
+          # create table variable 
+          TABLE=$(cat <<EOF
+          | Tool                 | Version         |
+          | -------------------- | --------------- |  
+          | SiEPIC EBeam PDK     |   $(echo "$EBEAM_PDK") |
+          | SiEPIC Tools         |   $(echo "$SIEPIC_TOOLS") |
+          | KLayout              |   0.28.13  |
+          | Python               | `<python>` |
+          EOF
+          )
+
           # read current table and check if it needs to be updated with a new version
           table_content=$(sed -n "/$start_table/,/$end_table/p" README.md)
 
@@ -89,17 +100,6 @@ jobs:
             echo "Update version table Ebeam PDK to $EBEAM_PDK and SiEPIC Tools to $SIEPIC_TOOLS"
             # remove current URL
             sed -i "/$start_table/,/$end_table/d" README.md
-  
-            # set table variable
-            TABLE=$(cat <<-EOF
-            | Tool                 | Version         |
-            | -------------------- | --------------- |  
-            | SiEPIC EBeam PDK     |   $(echo "${{ steps.ebeampdk.outputs.ebeampdk }}") |
-            | SiEPIC Tools         |   $(echo "${{ steps.siepictools.outputs.siepictools }}") |
-            | KLayout              |   0.28.13  |
-            | Python               | `<python>` |
-            EOF
-            )
   
             # add new URL
             printf "$start_table\n$TABLE\n$end_table\n" >> README.md
