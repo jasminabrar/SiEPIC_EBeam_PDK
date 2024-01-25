@@ -91,7 +91,7 @@ jobs:
             sed -i "/$start_table/,/$end_table/d" README.md
   
             # set table variable
-            TABLE=$(cat <<EOF
+            TABLE=$(cat <<-EOF
             | Tool                 | Version         |
             | -------------------- | --------------- |  
             | SiEPIC EBeam PDK     |   $(echo "${{ steps.ebeampdk.outputs.ebeampdk }}") |
