@@ -92,8 +92,8 @@ jobs:
           # read current table and check if it needs to be updated with a new version
           table_content=$(sed -n "/$start_table/,/$end_table/p" README.md)
 
-          table_ebeam_pdk=$(echo "$table_content" | awk -F'|' 'NR==3 {gsub(/^[ \t]+|[ \t]+$/,"",$2); print $2}')
-          table_siepic_tools=$(echo "$table_content" | awk -F'|' 'NR==4 {gsub(/^[ \t]+|[ \t]+$/,"",$2); print $2}')
+          table_ebeam_pdk=$(echo "$table_content" | awk -F'|' 'NR==4 {gsub(/^[ \t]+|[ \t]+$/,"",$3); print $3}')
+          table_siepic_tools=$(echo "$table_content" | awk -F'|' 'NR==5 {gsub(/^[ \t]+|[ \t]+$/,"",$3); print $3}')
 
           echo "table ebeam pdk = $table_ebeam_pdk"
           echo "table siepic tools = $table_siepic_tools"
